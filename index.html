@@ -1,0 +1,2461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juice Junkies — Pure. Fresh. Addictive.</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Permanent+Marker&family=Barlow:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #c41048;
+    --green: #2aab2a;
+    --yellow: #f5e642;
+    --dark: #0a0a0a;
+    --dark2: #111111;
+    --dark3: #1a1a1a;
+    --text: #f0f0e8;
+    --muted: #888880;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 70px;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(62,207,62,0.15);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.05em;
+    background: linear-gradient(135deg, var(--green) 20%, var(--pink) 65%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    cursor: pointer;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--green);
+  }
+
+  .nav-order-btn {
+    background: var(--pink);
+    color: #fff;
+    border: none;
+    padding: 0.55rem 1.4rem;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 900;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .nav-order-btn:hover { background: #d9205a; transform: scale(1.04); }
+
+  /* PAGES */
+  .page { display: none; min-height: 100vh; padding-top: 70px; }
+  .page.active { display: block; }
+
+  /* ========== HOME PAGE ========== */
+  #home-page {
+    background: var(--dark);
+  }
+
+  .hero {
+    position: relative;
+    min-height: calc(100vh - 70px);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: 4rem 2rem;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(120px, 20vw, 260px);
+    color: rgba(62,207,62,0.04);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .hero-left {}
+
+  .hero-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 1rem;
+  }
+
+  .hero-headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 8vw, 110px);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-headline .line-green { color: var(--green); }
+  .hero-headline .line-pink { color: var(--pink); }
+  .hero-headline .line-white { color: var(--text); }
+
+  .hero-tagline {
+    font-size: 1.1rem;
+    color: var(--muted);
+    font-weight: 500;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    max-width: 420px;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--pink);
+    color: #fff;
+    border: none;
+    padding: 1rem 2rem;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 900;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover { background: #d9205a; transform: translateY(-2px); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--green);
+    border: 2px solid var(--green);
+    padding: 1rem 2rem;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 900;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-outline:hover {
+    background: var(--green);
+    color: var(--dark);
+    transform: translateY(-2px);
+  }
+
+  .hero-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .hero-bottles {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-end;
+  }
+
+  .hero-bottle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    animation: floatBottle 3s ease-in-out infinite;
+  }
+
+  .hero-bottle:nth-child(2) { animation-delay: 0.5s; transform: translateY(-20px); }
+  .hero-bottle:nth-child(3) { animation-delay: 1s; }
+
+  @keyframes floatBottle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  .hero-bottle:nth-child(2) {
+    animation: floatBottle2 3s ease-in-out 0.5s infinite;
+  }
+
+  @keyframes floatBottle2 {
+    0%, 100% { transform: translateY(-20px); }
+    50% { transform: translateY(-35px); }
+  }
+
+  .bottle-svg {
+    width: 90px;
+    filter: drop-shadow(0 20px 40px rgba(62,207,62,0.3));
+  }
+
+  .bottle-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  /* Splatter decorations */
+  .splatter {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .splatter-1 {
+    top: -20px;
+    right: 30px;
+    width: 200px;
+    opacity: 0.6;
+  }
+
+  .splatter-2 {
+    bottom: 20px;
+    left: -30px;
+    width: 150px;
+    opacity: 0.4;
+    transform: rotate(180deg);
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    background: var(--dark3);
+    border-top: 1px solid rgba(62,207,62,0.1);
+    border-bottom: 1px solid rgba(62,207,62,0.1);
+    padding: 1.5rem 2rem;
+  }
+
+  .stats-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .stat-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(62,207,62,0.1);
+    border: 1px solid rgba(62,207,62,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .stat-text { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  .stat-text strong { display: block; color: var(--green); font-size: 0.75rem; }
+
+  /* FEATURED SECTION */
+  .featured {
+    padding: 6rem 2rem;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .section-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 6vw, 72px);
+    line-height: 1;
+    letter-spacing: 0.03em;
+  }
+
+  .section-title span { color: var(--green); }
+
+  .juices-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .juice-card {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .juice-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 60%, rgba(62,207,62,0.05));
+    pointer-events: none;
+  }
+
+  .juice-card:hover {
+    border-color: var(--green);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(62,207,62,0.15);
+  }
+
+  .juice-card:hover .juice-bottle-wrap,
+  .shop-card:hover .juice-bottle-wrap {
+    transform: scale(1.08) rotate(-3deg);
+  }
+
+  .juice-accent-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+
+  .juice-bottle-wrap {
+    transition: transform 0.3s;
+    margin-bottom: 1.5rem;
+  }
+
+  .juice-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+
+  .juice-sub {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .juice-ingredients {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+
+  .juice-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.25rem;
+  }
+
+  .juice-btn {
+    width: 100%;
+    padding: 0.85rem;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 900;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+
+  /* HOME MANIFESTO */
+  .manifesto {
+    padding: 6rem 2rem;
+    background: var(--dark2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .manifesto::before {
+    content: 'REAL';
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 200px;
+    color: rgba(255,31,120,0.04);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .manifesto-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .manifesto-quote {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(38px, 5vw, 64px);
+    line-height: 1.15;
+    margin-bottom: 2rem;
+  }
+
+  .manifesto-quote .highlight { color: var(--green); }
+  .manifesto-quote .highlight-pink { color: var(--pink); }
+
+  .manifesto-body {
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+  }
+
+  /* ========== SHOP PAGE ========== */
+  #shop-page {
+    background: var(--dark);
+  }
+
+  .shop-hero {
+    padding: 4rem 2rem 2rem;
+    text-align: center;
+    background: var(--dark2);
+    border-bottom: 1px solid rgba(62,207,62,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shop-hero::before {
+    content: 'SHOP';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 220px;
+    color: rgba(62,207,62,0.03);
+    pointer-events: none;
+  }
+
+  .shop-hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 96px);
+    line-height: 1;
+    position: relative;
+    z-index: 2;
+  }
+
+  .shop-hero p {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-top: 0.75rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .shop-grid {
+    padding: 4rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .shop-card {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.06);
+    overflow: hidden;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .shop-card:hover {
+    border-color: rgba(62,207,62,0.4);
+    box-shadow: 0 16px 48px rgba(62,207,62,0.1);
+  }
+
+  .shop-card-image {
+    width: 100%;
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shop-card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--pink);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  }
+
+  .shop-card-body {
+    padding: 1.5rem;
+  }
+
+  .shop-card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.7rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+
+  .shop-card-flavor {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .shop-card-ingredients {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+    border-left: 2px solid rgba(62,207,62,0.3);
+    padding-left: 0.75rem;
+  }
+
+  .shop-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .shop-tag {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border: 1px solid rgba(62,207,62,0.3);
+    color: var(--green);
+  }
+
+  .shop-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .shop-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem;
+    letter-spacing: 0.03em;
+    line-height: 1;
+  }
+
+  .shop-price span {
+    font-size: 1rem;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  /* QTY + ADD */
+  .qty-add {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .qty-wrap {
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .qty-btn {
+    width: 32px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .qty-btn:hover { background: rgba(255,255,255,0.07); }
+
+  .qty-num {
+    width: 30px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text);
+    border: none;
+    border-left: 1px solid rgba(255,255,255,0.12);
+    border-right: 1px solid rgba(255,255,255,0.12);
+    background: transparent;
+    pointer-events: none;
+  }
+
+  .add-btn {
+    background: var(--green);
+    color: var(--dark);
+    border: none;
+    height: 36px;
+    padding: 0 1rem;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 900;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  }
+
+  .add-btn:hover { background: #3dc83d; }
+  .add-btn:active { transform: scale(0.97); }
+
+  /* CART SIDEBAR */
+  .cart-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 800;
+    backdrop-filter: blur(4px);
+  }
+
+  .cart-overlay.open { display: block; }
+
+  .cart-panel {
+    position: fixed;
+    top: 70px;
+    right: 0;
+    bottom: 0;
+    width: 400px;
+    background: var(--dark2);
+    border-left: 1px solid rgba(62,207,62,0.15);
+    z-index: 850;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cart-panel.open { transform: translateX(0); }
+
+  .cart-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cart-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.1em;
+  }
+
+  .cart-close {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text);
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s;
+  }
+
+  .cart-close:hover { border-color: var(--pink); color: var(--pink); }
+
+  .cart-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.5rem;
+  }
+
+  .cart-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+  }
+
+  .cart-empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .cart-empty p { font-size: 0.9rem; }
+
+  .cart-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; }
+  .cart-item-sub { font-size: 0.75rem; color: var(--muted); }
+
+  .cart-item-qty {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .cart-item-remove {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: color 0.2s;
+  }
+
+  .cart-item-remove:hover { color: var(--pink); }
+
+  .cart-item-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    color: var(--green);
+  }
+
+  .cart-footer {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .cart-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1.25rem;
+  }
+
+  .cart-total-label { font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  .cart-total-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--yellow);
+  }
+
+  .cart-checkout-btn {
+    width: 100%;
+    background: var(--pink);
+    color: #fff;
+    border: none;
+    padding: 1.1rem;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 900;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: all 0.2s;
+    margin-bottom: 0.75rem;
+  }
+
+  .cart-checkout-btn:hover { background: #d9205a; }
+
+  .cart-note {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* CART FLOAT BTN */
+  .cart-float {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 500;
+    background: var(--pink);
+    color: #fff;
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 30px rgba(255,31,120,0.4);
+    transition: all 0.2s;
+  }
+
+  .cart-float:hover { transform: scale(1.1); }
+
+  .cart-float-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--green);
+    color: var(--dark);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: none;
+  }
+
+  /* ORDER MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 990;
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--dark2);
+    border: 1px solid rgba(62,207,62,0.2);
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .modal-header {
+    padding: 2rem 2rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.25rem;
+  }
+
+  .modal-sub { font-size: 0.85rem; color: var(--muted); }
+
+  .modal-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text);
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-close-btn:hover { border-color: var(--pink); color: var(--pink); }
+
+  .modal-body { padding: 1.5rem 2rem; }
+
+  .modal-order-summary {
+    background: var(--dark3);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-left: 3px solid var(--green);
+  }
+
+  .modal-order-summary h4 {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 0.75rem;
+  }
+
+  .modal-order-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    padding: 0.25rem 0;
+    color: var(--muted);
+  }
+
+  .modal-order-total {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 1rem;
+    padding-top: 0.75rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    color: var(--text);
+  }
+
+  .form-group { margin-bottom: 1.25rem; }
+
+  .form-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text);
+    padding: 0.75rem 1rem;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--green);
+  }
+
+  .form-textarea { height: 80px; resize: vertical; }
+
+  .form-select option { background: var(--dark2); }
+
+  .payment-methods {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .payment-option {
+    background: var(--dark3);
+    border: 2px solid rgba(255,255,255,0.08);
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .payment-option:hover { border-color: rgba(62,207,62,0.4); }
+  .payment-option.selected { border-color: var(--green); background: rgba(62,207,62,0.05); }
+
+  .payment-option-icon { font-size: 1.5rem; margin-bottom: 0.4rem; }
+
+  .payment-option-name {
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+  }
+
+  .payment-option-handle {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+  }
+
+  .modal-submit-btn {
+    width: 100%;
+    background: var(--pink);
+    color: #fff;
+    border: none;
+    padding: 1.1rem;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 900;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: all 0.2s;
+  }
+
+  .modal-submit-btn:hover { background: #d9205a; }
+
+  .modal-disclaimer {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 1rem;
+    line-height: 1.6;
+  }
+
+  /* SUCCESS STATE */
+  .success-state {
+    display: none;
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+
+  .success-state.show { display: block; }
+
+  .success-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .success-state h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: var(--green);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+  }
+
+  .success-state p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  /* ========== ABOUT PAGE ========== */
+  #about-page {
+    background: var(--dark);
+  }
+
+  .about-hero {
+    padding: 5rem 2rem 4rem;
+    background: var(--dark2);
+    border-bottom: 1px solid rgba(62,207,62,0.1);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .about-hero::before {
+    content: 'REAL';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 200px;
+    color: rgba(255,31,120,0.04);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .about-hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 96px);
+    line-height: 1;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .about-hero p {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.8;
+    position: relative;
+    z-index: 2;
+  }
+
+  .about-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+
+  .about-text h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(38px, 5vw, 60px);
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+  }
+
+  .about-text h2 span { color: var(--green); }
+
+  .about-text p {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.9;
+    margin-bottom: 1.25rem;
+  }
+
+  .about-text p strong { color: var(--text); }
+
+  .about-values {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .about-value {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .about-value-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(62,207,62,0.1);
+    border: 1px solid rgba(62,207,62,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .about-value-text h4 {
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 0.25rem;
+  }
+
+  .about-value-text p { font-size: 0.85rem; color: var(--muted); margin: 0; }
+
+  .about-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .about-stat-card {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 1.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .about-stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--green);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+  }
+
+  .about-stat-card:hover::after { transform: scaleX(1); }
+
+  .about-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    line-height: 1;
+    letter-spacing: 0.03em;
+    color: var(--green);
+  }
+
+  .about-stat-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  .about-mission {
+    background: var(--dark2);
+    padding: 5rem 2rem;
+    border-top: 1px solid rgba(62,207,62,0.1);
+    border-bottom: 1px solid rgba(62,207,62,0.1);
+    text-align: center;
+  }
+
+  .about-mission h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+  }
+
+  .about-mission h2 span { color: var(--pink); }
+
+  .about-mission p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.9;
+    max-width: 680px;
+    margin: 0 auto 2rem;
+  }
+
+  /* CONTACT SECTION */
+  .contact {
+    padding: 5rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .contact-info h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 4vw, 52px);
+    margin-bottom: 1rem;
+    letter-spacing: 0.03em;
+  }
+
+  .contact-info h2 span { color: var(--green); }
+
+  .contact-info p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .contact-link:hover { color: var(--green); }
+
+  .contact-link-icon {
+    width: 38px;
+    height: 38px;
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+  }
+
+  .contact-link:hover .contact-link-icon { border-color: var(--green); }
+
+  .contact-form-wrap {
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 2rem;
+  }
+
+  .contact-form-wrap h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.25rem;
+  }
+
+  .contact-form-wrap p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-submit-btn {
+    width: 100%;
+    background: var(--green);
+    color: var(--dark);
+    border: none;
+    padding: 1rem;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 900;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: all 0.2s;
+  }
+
+  .contact-submit-btn:hover { background: #3dc83d; }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark2);
+    border-top: 1px solid rgba(62,207,62,0.1);
+    padding: 3rem 2rem 2rem;
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .footer-brand-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 0.05em;
+    background: linear-gradient(135deg, var(--green) 20%, var(--pink) 65%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.75rem;
+  }
+
+  .footer-tagline {
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .footer-social-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .footer-social-icon:hover {
+    border-color: var(--pink);
+    color: var(--pink);
+  }
+
+  .footer-col h4 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 1.25rem;
+  }
+
+  .footer-col ul { list-style: none; }
+
+  .footer-col ul li {
+    margin-bottom: 0.6rem;
+  }
+
+  .footer-col ul li a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: color 0.2s;
+  }
+
+  .footer-col ul li a:hover { color: var(--text); }
+
+  .footer-bottom {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  /* INSTAGRAM BANNER */
+  .ig-banner {
+    background: linear-gradient(135deg, rgba(255,31,120,0.08), rgba(62,207,62,0.08));
+    border-top: 1px solid rgba(255,31,120,0.1);
+    border-bottom: 1px solid rgba(255,31,120,0.1);
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .ig-banner a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 1rem;
+    transition: color 0.2s;
+  }
+
+  .ig-banner a:hover { color: var(--pink); }
+
+  .ig-icon { display:flex; align-items:center; }
+
+  /* MARQUEE */
+  .marquee-wrap {
+    overflow: hidden;
+    background: var(--green);
+    padding: 0.6rem 0;
+    border-top: 2px solid #2aad2a;
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 20s linear infinite;
+  }
+
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 2rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+    color: var(--dark);
+    white-space: nowrap;
+  }
+
+  .marquee-dot {
+    width: 6px;
+    height: 6px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 50%;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in { animation: fadeUp 0.6s ease forwards; }
+  .fade-in-delay-1 { animation: fadeUp 0.6s 0.1s ease both; }
+  .fade-in-delay-2 { animation: fadeUp 0.6s 0.2s ease both; }
+  .fade-in-delay-3 { animation: fadeUp 0.6s 0.3s ease both; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero-content, .about-content, .contact {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .hero-right { display: none; }
+    .juices-grid, .shop-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .payment-methods { grid-template-columns: 1fr; }
+    .cart-panel { width: 100%; }
+    .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">Juice Junkies</div>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('home')" id="nav-home" class="active">Home</a></li>
+    <li><a href="#" onclick="showPage('shop')" id="nav-shop">Shop</a></li>
+    <li><a href="#" onclick="showPage('about')" id="nav-about">About</a></li>
+  </ul>
+  <button class="nav-order-btn" onclick="showPage('shop')">Order Now</button>
+</nav>
+
+<!-- CART FLOAT BTN -->
+<button class="cart-float" onclick="toggleCart()" aria-label="Open cart">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+  <span class="cart-float-badge" id="cart-badge">0</span>
+</button>
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+
+<!-- CART PANEL -->
+<div class="cart-panel" id="cart-panel">
+  <div class="cart-header">
+    <div class="cart-title">Your Order</div>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items">
+    <div class="cart-empty">
+      <div class="cart-empty-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8C8 10 5.9 16.17 3.82 19.5c-.05.08-.1.15-.14.22"/><path d="M3.82 19.5C3.82 19.5 5 14 12 12"/><path d="M3 21c.5-1.5 1.5-3 3-4.5"/></svg></div>
+      <p>Your cart is empty.<br>Add some juice!</p>
+    </div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-price" id="cart-total-price">$0</span>
+    </div>
+    <button class="cart-checkout-btn" onclick="openCheckout()">Place Order →</button>
+    <p class="cart-note">Payment via Venmo or Zelle after confirmation.<br>Pickup or local delivery available.</p>
+  </div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="order-modal">
+  <div class="modal">
+    <div id="order-form-content">
+      <div class="modal-header">
+        <div class="modal-title">Place Your Order</div>
+        <div class="modal-sub">Fill in your info and we'll confirm within 24 hours.</div>
+        <button class="modal-close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-order-summary" id="modal-order-summary"></div>
+
+        <div class="form-group">
+          <label class="form-label">Your Name</label>
+          <input type="text" class="form-input" id="order-name" placeholder="First & last name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" id="order-phone" placeholder="(555) 000-0000" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="order-email" placeholder="you@email.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Pickup or Delivery?</label>
+          <select class="form-select" id="order-delivery" style="margin-bottom:0.5rem;">
+            <option value="pickup">Pickup (free)</option>
+            <option value="delivery">Local delivery (I'll confirm if available)</option>
+          </select>
+          <p style="font-size:0.75rem; color:var(--muted); line-height:1.6; margin-top:0.4rem;">Pickup location will be confirmed via text after your order is received.</p>
+        </div>
+        <div class="form-group" id="delivery-address-group" style="display:none;">
+          <label class="form-label">Delivery Address</label>
+          <input type="text" class="form-input" id="order-address" placeholder="Street address">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes for your order</label>
+          <textarea class="form-textarea" id="order-notes" placeholder="Any special requests, preferred pickup day, etc."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="margin-bottom:0.75rem;">Payment Method</label>
+          <div class="payment-methods">
+            <div class="payment-option selected" onclick="selectPayment('venmo', this)">
+              <div class="payment-option-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+              <div class="payment-option-name">Venmo</div>
+              <div class="payment-option-handle">@JuiceJunkies</div>
+            </div>
+            <div class="payment-option" onclick="selectPayment('zelle', this)">
+              <div class="payment-option-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+              <div class="payment-option-name">Zelle</div>
+              <div class="payment-option-handle">Payment info on confirm</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="modal-submit-btn" onclick="submitOrder()">Send Order Request →</button>
+        <p class="modal-disclaimer">
+          You'll receive a confirmation within 24 hours with payment info.<br>
+          <strong style="color: var(--text);">No charge until your order is confirmed.</strong>
+        </p>
+      </div>
+    </div>
+
+    <div class="success-state" id="order-success">
+      <span class="success-icon"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></span>
+      <h3>Order Received!</h3>
+      <p>Thanks! We'll reach out within 24 hours to confirm your order and send payment info. Stay fresh.</p>
+      <br>
+      <button class="btn-primary" onclick="closeModal()" style="margin: 0 auto; display: block; padding: 1rem 2rem; background: var(--green); color: var(--dark); clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);">Back to Shop</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HOME PAGE ===== -->
+<div class="page active" id="home-page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg-text">FRESH</div>
+    <div class="hero-content">
+      <div class="hero-left fade-in">
+        <div class="hero-eyebrow">Cold Pressed · 100% Natural · Made Fresh Daily</div>
+        <h1 class="hero-headline">
+          <span class="line-green">PURE.</span><br>
+          <span class="line-pink">FRESH.</span><br>
+          <span class="line-white">ADDICTIVE.</span>
+        </h1>
+        <p class="hero-tagline">Small batch, cold pressed juice made with real fruits and vegetables. No additives, no sugar, no shortcuts. Just fuel.</p>
+        <div class="hero-ctas">
+          <button class="btn-primary" onclick="showPage('shop')">Shop Juices</button>
+          <button class="btn-outline" onclick="showPage('about')">Our Story</button>
+        </div>
+      </div>
+      <div class="hero-right fade-in-delay-2">
+        <!-- Decorative SVG splatter -->
+        <svg class="splatter splatter-1" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="60" cy="50" rx="55" ry="30" fill="#ff1f78" opacity="0.7"/>
+          <circle cx="120" cy="30" r="15" fill="#ff1f78" opacity="0.5"/>
+          <circle cx="150" cy="65" r="8" fill="#ff1f78" opacity="0.4"/>
+          <ellipse cx="30" cy="80" rx="20" ry="10" fill="#ff1f78" opacity="0.3"/>
+          <circle cx="170" cy="20" r="5" fill="#ff1f78" opacity="0.6"/>
+        </svg>
+        <div class="hero-bottles">
+          <div class="hero-bottle">
+            <svg class="bottle-svg" viewBox="0 0 80 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="28" y="2" width="24" height="14" rx="3" fill="#111"/>
+              <rect x="28" y="2" width="24" height="4" rx="2" fill="#222"/>
+              <rect x="30" y="16" width="20" height="10" fill="#1a4a1a"/>
+              <path d="M30 26 Q14 34 14 50 L14 162 Q14 170 22 170 L58 170 Q66 170 66 162 L66 50 Q66 34 50 26 Z" fill="#2d8b2d"/>
+              <rect x="18" y="68" width="44" height="72" rx="2" fill="rgba(0,0,0,0.15)"/>
+              <text x="40" y="105" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="7" fill="rgba(255,255,255,0.9)" letter-spacing="1">GREEN</text>
+              <text x="40" y="116" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="6" fill="rgba(255,255,255,0.6)" letter-spacing="1">DETOX</text>
+              <path d="M22 50 Q22 38 30 32 L30 130 Q22 130 22 118 Z" fill="rgba(255,255,255,0.06)"/>
+            </svg>
+            <div class="bottle-label">Green Detox</div>
+          </div>
+          <div class="hero-bottle">
+            <svg class="bottle-svg" viewBox="0 0 80 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="28" y="2" width="24" height="14" rx="3" fill="#111"/>
+              <rect x="28" y="2" width="24" height="4" rx="2" fill="#222"/>
+              <rect x="30" y="16" width="20" height="10" fill="#7a2c00"/>
+              <path d="M30 26 Q14 34 14 50 L14 162 Q14 170 22 170 L58 170 Q66 170 66 162 L66 50 Q66 34 50 26 Z" fill="#c84a0a"/>
+              <rect x="18" y="68" width="44" height="72" rx="2" fill="rgba(0,0,0,0.15)"/>
+              <text x="40" y="105" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="7" fill="rgba(255,255,255,0.9)" letter-spacing="1">CITRUS</text>
+              <text x="40" y="116" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="6" fill="rgba(255,255,255,0.6)" letter-spacing="1">GLOW</text>
+              <path d="M22 50 Q22 38 30 32 L30 130 Q22 130 22 118 Z" fill="rgba(255,255,255,0.06)"/>
+            </svg>
+            <div class="bottle-label">Citrus Glow</div>
+          </div>
+          <div class="hero-bottle">
+            <svg class="bottle-svg" viewBox="0 0 80 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="28" y="2" width="24" height="14" rx="3" fill="#111"/>
+              <rect x="28" y="2" width="24" height="4" rx="2" fill="#222"/>
+              <rect x="30" y="16" width="20" height="10" fill="#3a0008"/>
+              <path d="M30 26 Q14 34 14 50 L14 162 Q14 170 22 170 L58 170 Q66 170 66 162 L66 50 Q66 34 50 26 Z" fill="#7a0a1a"/>
+              <rect x="18" y="68" width="44" height="72" rx="2" fill="rgba(0,0,0,0.15)"/>
+              <text x="40" y="105" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="7" fill="rgba(255,255,255,0.9)" letter-spacing="1">BEET</text>
+              <text x="40" y="116" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="6" fill="rgba(255,255,255,0.6)" letter-spacing="1">BOOST</text>
+              <path d="M22 50 Q22 38 30 32 L30 130 Q22 130 22 118 Z" fill="rgba(255,255,255,0.06)"/>
+            </svg>
+            <div class="bottle-label">Beet Boost</div>
+          </div>
+        </div>
+        <svg class="splatter splatter-2" viewBox="0 0 150 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="70" cy="45" rx="60" ry="25" fill="#3ecf3e" opacity="0.5"/>
+          <circle cx="20" cy="30" r="12" fill="#3ecf3e" opacity="0.4"/>
+          <circle cx="130" cy="60" r="8" fill="#3ecf3e" opacity="0.3"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item">100% Cold Pressed <span class="marquee-dot"></span></span>
+      <span class="marquee-item">No Added Sugar <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Made Fresh Daily <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Real Fruits & Veggies <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Nutrient Rich <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Fuel Your Lifestyle <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Zero Preservatives <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Small Batch <span class="marquee-dot"></span></span>
+      <span class="marquee-item">100% Cold Pressed <span class="marquee-dot"></span></span>
+      <span class="marquee-item">No Added Sugar <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Made Fresh Daily <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Real Fruits & Veggies <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Nutrient Rich <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Fuel Your Lifestyle <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Zero Preservatives <span class="marquee-dot"></span></span>
+      <span class="marquee-item">Small Batch <span class="marquee-dot"></span></span>
+    </div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V12"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/><path d="M8 5.07A10 10 0 0 1 22 12"/><path d="M2 12a10 10 0 0 1 14-9.07"/></svg></div>
+        <div class="stat-text">100% Natural<strong>No Artificial Anything</strong></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
+        <div class="stat-text">Cold Pressed<strong>Max Nutrients Locked In</strong></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
+        <div class="stat-text">Nutrient Rich<strong>Vitamins & Natural Energy</strong></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+        <div class="stat-text">No Added Sugar<strong>Zero Preservatives</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURED JUICES -->
+  <section class="featured">
+    <div class="section-header">
+      <div class="section-eyebrow">The Lineup</div>
+      <h2 class="section-title">What We're <span>Pressing</span></h2>
+    </div>
+    <div class="juices-grid">
+      <div class="juice-card fade-in-delay-1" onclick="showPage('shop')">
+        <div class="juice-accent-bar" style="background: linear-gradient(90deg, #1a7a1a, #3ecf3e);"></div>
+        <div class="juice-bottle-wrap">
+          <svg viewBox="0 0 80 180" width="80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- cap -->
+            <rect x="28" y="2" width="24" height="14" rx="3" fill="#111"/>
+            <rect x="28" y="2" width="24" height="4" rx="2" fill="#222"/>
+            <!-- neck -->
+            <rect x="30" y="16" width="20" height="10" fill="#1a4a1a"/>
+            <!-- shoulder + body -->
+            <path d="M30 26 Q14 34 14 50 L14 162 Q14 170 22 170 L58 170 Q66 170 66 162 L66 50 Q66 34 50 26 Z" fill="#2d8b2d"/>
+            <!-- label area -->
+            <rect x="18" y="68" width="44" height="72" rx="2" fill="rgba(0,0,0,0.15)"/>
+            <text x="40" y="105" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="7" fill="rgba(255,255,255,0.9)" letter-spacing="1">GREEN</text>
+            <text x="40" y="116" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="6" fill="rgba(255,255,255,0.6)" letter-spacing="1">DETOX</text>
+            <!-- highlight -->
+            <path d="M22 50 Q22 38 30 32 L30 130 Q22 130 22 118 Z" fill="rgba(255,255,255,0.06)"/>
+          </svg>
+        </div>
+        <div class="juice-name">Green Detox</div>
+        <div class="juice-sub">16 oz Cold Pressed</div>
+        <div class="juice-ingredients">Kale · Cucumber · Apple · Lemon · Ginger</div>
+        <div class="juice-price" style="color: var(--green);">$10</div>
+        <button class="juice-btn" style="background: var(--green); color: var(--dark);">Order Now</button>
+      </div>
+      <div class="juice-card fade-in-delay-2" onclick="showPage('shop')">
+        <div class="juice-accent-bar" style="background: linear-gradient(90deg, #a03000, #e06020);"></div>
+        <div class="juice-bottle-wrap">
+          <svg viewBox="0 0 80 180" width="80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- cap -->
+            <rect x="28" y="2" width="24" height="14" rx="3" fill="#111"/>
+            <rect x="28" y="2" width="24" height="4" rx="2" fill="#222"/>
+            <!-- neck -->
+            <rect x="30" y="16" width="20" height="10" fill="#7a2c00"/>
+            <!-- shoulder + body -->
+            <path d="M30 26 Q14 34 14 50 L14 162 Q14 170 22 170 L58 170 Q66 170 66 162 L66 50 Q66 34 50 26 Z" fill="#c84a0a"/>
+            <!-- label area -->
+            <rect x="18" y="68" width="44" height="72" rx="2" fill="rgba(0,0,0,0.15)"/>
+            <text x="40" y="105" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="7" fill="rgba(255,255,255,0.9)" letter-spacing="1">CITRUS</text>
+            <text x="40" y="116" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="6" fill="rgba(255,255,255,0.6)" letter-spacing="1">GLOW</text>
+            <!-- highlight -->
+            <path d="M22 50 Q22 38 30 32 L30 130 Q22 130 22 118 Z" fill="rgba(255,255,255,0.06)"/>
+          </svg>
+        </div>
+        <div class="juice-name">Citrus Glow</div>
+        <div class="juice-sub">16 oz Cold Pressed</div>
+        <div class="juice-ingredients">Orange · Pineapple · Carrot · Lemon · Turmeric</div>
+        <div class="juice-price" style="color: #e06020;">$10</div>
+        <button class="juice-btn" style="background: #e06020; color: #fff;">Order Now</button>
+      </div>
+      <div class="juice-card fade-in-delay-3" onclick="showPage('shop')">
+        <div class="juice-accent-bar" style="background: linear-gradient(90deg, #5a0010, #c0203a);"></div>
+        <div class="juice-bottle-wrap">
+          <svg viewBox="0 0 80 180" width="80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- cap -->
+            <rect x="28" y="2" width="24" height="14" rx="3" fill="#111"/>
+            <rect x="28" y="2" width="24" height="4" rx="2" fill="#222"/>
+            <!-- neck -->
+            <rect x="30" y="16" width="20" height="10" fill="#3a0008"/>
+            <!-- shoulder + body -->
+            <path d="M30 26 Q14 34 14 50 L14 162 Q14 170 22 170 L58 170 Q66 170 66 162 L66 50 Q66 34 50 26 Z" fill="#7a0a1a"/>
+            <!-- label area -->
+            <rect x="18" y="68" width="44" height="72" rx="2" fill="rgba(0,0,0,0.15)"/>
+            <text x="40" y="105" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="7" fill="rgba(255,255,255,0.9)" letter-spacing="1">BEET</text>
+            <text x="40" y="116" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="6" fill="rgba(255,255,255,0.6)" letter-spacing="1">BOOST</text>
+            <!-- highlight -->
+            <path d="M22 50 Q22 38 30 32 L30 130 Q22 130 22 118 Z" fill="rgba(255,255,255,0.06)"/>
+          </svg>
+        </div>
+        <div class="juice-name">Beet Boost</div>
+        <div class="juice-sub">16 oz Cold Pressed</div>
+        <div class="juice-ingredients">Beet · Apple · Carrot · Lemon · Ginger</div>
+        <div class="juice-price" style="color: var(--pink);">$10</div>
+        <button class="juice-btn" style="background: var(--pink); color: #fff;">Order Now</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto">
+    <div class="manifesto-inner">
+      <h2 class="manifesto-quote">
+        <span class="highlight">Real ingredients.</span><br>
+        <span class="highlight-pink">Real results.</span><br>
+        No compromise.
+      </h2>
+      <p class="manifesto-body">We don't cut corners. Every bottle is cold pressed in small batches to keep the nutrients locked in and the flavor real. No heat, no fillers, no funny stuff — just pure fuel for your life.</p>
+      <button class="btn-primary" onclick="showPage('about')">Our Story →</button>
+    </div>
+  </section>
+
+  <!-- IG BANNER -->
+  <div class="ig-banner">
+    <a href="https://instagram.com/juicejunkies__" target="_blank">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      Follow us on Instagram @juicejunkies__
+    </a>
+  </div>
+
+</div><!-- /home-page -->
+
+
+<!-- ===== SHOP PAGE ===== -->
+<div class="page" id="shop-page">
+  <div class="shop-hero">
+    <h1>The <span style="color: var(--green);">Menu</span></h1>
+    <p>All juices cold pressed · 16 oz bottles · Made fresh to order</p>
+  </div>
+
+  <div class="shop-grid">
+
+    <!-- Green Detox -->
+    <div class="shop-card" style="text-align:center; padding-top:2rem;">
+      <div class="juice-accent-bar" style="background: linear-gradient(90deg, #1a7a1a, var(--green));"></div>
+      <div class="juice-bottle-wrap" style="margin-bottom:1.5rem;">
+        <svg viewBox="0 0 80 180" width="80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="28" y="2" width="24" height="14" rx="3" fill="#111"/>
+          <rect x="28" y="2" width="24" height="4" rx="2" fill="#222"/>
+          <rect x="30" y="16" width="20" height="10" fill="#1a4a1a"/>
+          <path d="M30 26 Q14 34 14 50 L14 162 Q14 170 22 170 L58 170 Q66 170 66 162 L66 50 Q66 34 50 26 Z" fill="#2d8b2d"/>
+          <rect x="18" y="68" width="44" height="72" rx="2" fill="rgba(0,0,0,0.15)"/>
+          <text x="40" y="105" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="7" fill="rgba(255,255,255,0.9)" letter-spacing="1">GREEN</text>
+          <text x="40" y="116" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="6" fill="rgba(255,255,255,0.6)" letter-spacing="1">DETOX</text>
+          <path d="M22 50 Q22 38 30 32 L30 130 Q22 130 22 118 Z" fill="rgba(255,255,255,0.06)"/>
+        </svg>
+
+      </div>
+      <div class="shop-card-body" style="text-align:left;">
+        <div class="juice-name" style="color: var(--green);">Green Detox</div>
+        <div class="juice-sub">16 oz Cold Pressed</div>
+        <div class="juice-ingredients">Kale · Cucumber · Apple · Lemon · Ginger</div>
+        <div class="shop-card-tags">
+          <span class="shop-tag">Detox</span>
+          <span class="shop-tag">Energy</span>
+          <span class="shop-tag">Immune</span>
+          <span class="shop-tag">Anti-inflammatory</span>
+        </div>
+        <div class="shop-card-footer">
+          <div class="shop-price">$10 <span>/ bottle</span></div>
+          <div class="qty-add">
+            <div class="qty-wrap">
+              <button class="qty-btn" onclick="changeQty('green', -1)">−</button>
+              <span class="qty-num" id="qty-green">1</span>
+              <button class="qty-btn" onclick="changeQty('green', 1)">+</button>
+            </div>
+            <button class="add-btn" onclick="addToCart('green', 'Green Detox', 10)">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Citrus Glow -->
+    <div class="shop-card" style="text-align:center; padding-top:2rem;">
+      <div class="juice-accent-bar" style="background: linear-gradient(90deg, #a03000, #e06020);"></div>
+      <div class="juice-bottle-wrap" style="margin-bottom:1.5rem;">
+        <svg viewBox="0 0 80 180" width="80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="28" y="2" width="24" height="14" rx="3" fill="#111"/>
+          <rect x="28" y="2" width="24" height="4" rx="2" fill="#222"/>
+          <rect x="30" y="16" width="20" height="10" fill="#7a2c00"/>
+          <path d="M30 26 Q14 34 14 50 L14 162 Q14 170 22 170 L58 170 Q66 170 66 162 L66 50 Q66 34 50 26 Z" fill="#c84a0a"/>
+          <rect x="18" y="68" width="44" height="72" rx="2" fill="rgba(0,0,0,0.15)"/>
+          <text x="40" y="105" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="7" fill="rgba(255,255,255,0.9)" letter-spacing="1">CITRUS</text>
+          <text x="40" y="116" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="6" fill="rgba(255,255,255,0.6)" letter-spacing="1">GLOW</text>
+          <path d="M22 50 Q22 38 30 32 L30 130 Q22 130 22 118 Z" fill="rgba(255,255,255,0.06)"/>
+        </svg>
+      </div>
+      <div class="shop-card-body" style="text-align:left;">
+        <div class="juice-name" style="color: #e06020;">Citrus Glow</div>
+        <div class="juice-sub">16 oz Cold Pressed</div>
+        <div class="juice-ingredients">Orange · Pineapple · Carrot · Lemon · Turmeric</div>
+        <div class="shop-card-tags">
+          <span class="shop-tag" style="color: #e06020; border-color: rgba(224,96,32,0.3);">Glow</span>
+          <span class="shop-tag" style="color: #e06020; border-color: rgba(224,96,32,0.3);">Vitamin C</span>
+          <span class="shop-tag" style="color: #e06020; border-color: rgba(224,96,32,0.3);">Skin</span>
+          <span class="shop-tag" style="color: #e06020; border-color: rgba(224,96,32,0.3);">Recovery</span>
+        </div>
+        <div class="shop-card-footer">
+          <div class="shop-price">$10 <span>/ bottle</span></div>
+          <div class="qty-add">
+            <div class="qty-wrap">
+              <button class="qty-btn" onclick="changeQty('citrus', -1)">−</button>
+              <span class="qty-num" id="qty-citrus">1</span>
+              <button class="qty-btn" onclick="changeQty('citrus', 1)">+</button>
+            </div>
+            <button class="add-btn" onclick="addToCart('citrus', 'Citrus Glow', 10)" style="background: #e06020; color: #fff;">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beet Boost -->
+    <div class="shop-card" style="text-align:center; padding-top:2rem;">
+      <div class="juice-accent-bar" style="background: linear-gradient(90deg, #5a0010, var(--pink));"></div>
+      <div class="juice-bottle-wrap" style="margin-bottom:1.5rem;">
+        <svg viewBox="0 0 80 180" width="80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="28" y="2" width="24" height="14" rx="3" fill="#111"/>
+          <rect x="28" y="2" width="24" height="4" rx="2" fill="#222"/>
+          <rect x="30" y="16" width="20" height="10" fill="#3a0008"/>
+          <path d="M30 26 Q14 34 14 50 L14 162 Q14 170 22 170 L58 170 Q66 170 66 162 L66 50 Q66 34 50 26 Z" fill="#7a0a1a"/>
+          <rect x="18" y="68" width="44" height="72" rx="2" fill="rgba(0,0,0,0.15)"/>
+          <text x="40" y="105" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="7" fill="rgba(255,255,255,0.9)" letter-spacing="1">BEET</text>
+          <text x="40" y="116" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="6" fill="rgba(255,255,255,0.6)" letter-spacing="1">BOOST</text>
+          <path d="M22 50 Q22 38 30 32 L30 130 Q22 130 22 118 Z" fill="rgba(255,255,255,0.06)"/>
+        </svg>
+      </div>
+      <div class="shop-card-body" style="text-align:left;">
+        <div class="juice-name" style="color: var(--pink);">Beet Boost</div>
+        <div class="juice-sub">16 oz Cold Pressed</div>
+        <div class="juice-ingredients">Beet · Apple · Carrot · Lemon · Ginger</div>
+        <div class="shop-card-tags">
+          <span class="shop-tag" style="color: var(--pink); border-color: rgba(255,31,120,0.3);">Workout</span>
+          <span class="shop-tag" style="color: var(--pink); border-color: rgba(255,31,120,0.3);">Recovery</span>
+          <span class="shop-tag" style="color: var(--pink); border-color: rgba(255,31,120,0.3);">Endurance</span>
+          <span class="shop-tag" style="color: var(--pink); border-color: rgba(255,31,120,0.3);">Iron</span>
+        </div>
+        <div class="shop-card-footer">
+          <div class="shop-price">$10 <span>/ bottle</span></div>
+          <div class="qty-add">
+            <div class="qty-wrap">
+              <button class="qty-btn" onclick="changeQty('beet', -1)">−</button>
+              <span class="qty-num" id="qty-beet">1</span>
+              <button class="qty-btn" onclick="changeQty('beet', 1)">+</button>
+            </div>
+            <button class="add-btn" onclick="addToCart('beet', 'Beet Boost', 10)" style="background: var(--pink); color: #fff;">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ORDER INFO STRIP -->
+  <div style="background: var(--dark2); border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 3rem 2rem; margin-top: 1rem;">
+    <div style="max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; text-align: center;">
+      <div>
+        <div style="margin-bottom:0.75rem;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+        <div style="font-weight: 700; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.35rem;">How it Works</div>
+        <div style="font-size: 0.8rem; color: var(--muted); line-height: 1.7;">Add bottles to cart, place your order, and we'll confirm within 24 hours with pickup details.</div>
+      </div>
+      <div>
+        <div style="margin-bottom:0.75rem;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+        <div style="font-weight: 700; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.35rem;">Payment</div>
+        <div style="font-size: 0.8rem; color: var(--muted); line-height: 1.7;">Venmo or Zelle only. Payment sent after your order is confirmed. No charge until then.</div>
+      </div>
+      <div>
+        <div style="margin-bottom:0.75rem;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8C8 10 5.9 16.17 3.82 19.5c-.05.08-.1.15-.14.22"/><path d="M3.82 19.5C3.82 19.5 5 14 12 12"/></svg></div>
+        <div style="font-weight: 700; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.35rem;">Freshness Guarantee</div>
+        <div style="font-size: 0.8rem; color: var(--muted); line-height: 1.7;">Every bottle is pressed the same day it ships or gets picked up. Best within 3–4 days.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IG BANNER -->
+  <div class="ig-banner">
+    <a href="https://instagram.com/juicejunkies__" target="_blank">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      Tag us in your order @juicejunkies__
+    </a>
+  </div>
+
+</div><!-- /shop-page -->
+
+
+<!-- ===== ABOUT PAGE ===== -->
+<div class="page" id="about-page">
+
+  <div class="about-hero">
+    <h1>Our <span style="color: var(--pink);">Story</span></h1>
+    <p>Started in a kitchen, built on obsession. We make juice the right way — no shortcuts, no compromises, just pure fuel pressed with purpose.</p>
+  </div>
+
+  <div class="about-content">
+    <div class="about-text">
+      <h2>Built on a <span>simple idea.</span></h2>
+      <p>Juice Junkies started because we got tired of paying for "healthy" drinks that were mostly water, sugar, and marketing. We wanted something <strong>real</strong> — something you could actually feel working.</p>
+      <p>Everything is small batch, cold pressed right here at home. That means <strong>no heat, no pasteurization</strong>, and no nutrient loss. Just the highest quality produce, pressed fresh, bottled the same day.</p>
+      <p>We're not a factory. We're a passion project that got serious. Every bottle gets our full attention — and you can taste the difference.</p>
+
+      <div class="about-values">
+        <div class="about-value">
+          <div class="about-value-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10"/><path d="M12 8c0 4-3 6-3 6h6s-3-2-3-6z"/><path d="M12 2v4"/></svg>
+          </div>
+          <div class="about-value-text">
+            <h4>Real Ingredients Only</h4>
+            <p>Real fruits, real vegetables, real results. Nothing artificial, ever.</p>
+          </div>
+        </div>
+        <div class="about-value">
+          <div class="about-value-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          </div>
+          <div class="about-value-text">
+            <h4>Cold Pressed, Not Cooked</h4>
+            <p>Heat kills enzymes and nutrients. Cold pressing keeps all the good stuff intact.</p>
+          </div>
+        </div>
+        <div class="about-value">
+          <div class="about-value-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <div class="about-value-text">
+            <h4>Small Batch, Big Care</h4>
+            <p>Made to order in small quantities so every bottle is as fresh as it gets.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-visual">
+      <div class="about-stat-card">
+        <div class="about-stat-num">100%</div>
+        <div class="about-stat-label">Natural ingredients — no additives</div>
+      </div>
+      <div class="about-stat-card">
+        <div class="about-stat-num" style="color: var(--pink);">0g</div>
+        <div class="about-stat-label">Added sugar in every bottle</div>
+      </div>
+      <div class="about-stat-card">
+        <div class="about-stat-num" style="color: var(--yellow);">3–4</div>
+        <div class="about-stat-label">Days freshness — pressed same-day</div>
+      </div>
+      <div class="about-stat-card">
+        <div class="about-stat-num">16oz</div>
+        <div class="about-stat-label">Per bottle — nothing watered down</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-mission">
+    <h2>Made for your <span>lifestyle.</span></h2>
+    <p>Whether you're grinding at the gym, trying to eat cleaner, recovering after a long week, or just need something that actually tastes good and good for you — this is it. No gimmicks, no noise. Just juice.</p>
+    <button class="btn-primary" onclick="showPage('shop')">Shop Now →</button>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact">
+    <div class="contact-info">
+      <h2>Get In <span>Touch</span></h2>
+      <p>Questions about orders, pickups, bulk pricing, or anything else — we're real people and we actually respond. Hit us up.</p>
+      <div class="contact-links">
+        <a class="contact-link" href="https://instagram.com/juicejunkies__" target="_blank">
+          <div class="contact-link-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></div>
+          @juicejunkies__ on Instagram
+        </a>
+        <a class="contact-link" href="mailto:hello@juicejunkies.com">
+          <div class="contact-link-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          hello@juicejunkies.com
+        </a>
+        <a class="contact-link" href="tel:+1-555-000-0000">
+          <div class="contact-link-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.46 2 2 0 0 1 3.59 2.25h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.22 6.22l.93-.93a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+          Text us your order questions
+        </a>
+      </div>
+    </div>
+
+    <div class="contact-form-wrap">
+      <h3>Send a Message</h3>
+      <p>Questions, bulk orders, feedback — we're listening.</p>
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-input" id="contact-name" placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="contact-email" placeholder="you@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-textarea" id="contact-message" placeholder="What's on your mind?"></textarea>
+      </div>
+      <button class="contact-submit-btn" onclick="submitContact()">Send Message →</button>
+      <p id="contact-confirm" style="display:none; text-align:center; margin-top:1rem; font-size:0.82rem; color: var(--green);">✓ Message sent! We'll get back to you soon.</p>
+    </div>
+  </div>
+
+  <!-- IG BANNER -->
+  <div class="ig-banner">
+    <a href="https://instagram.com/juicejunkies__" target="_blank">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      Follow us @juicejunkies__
+    </a>
+  </div>
+
+</div><!-- /about-page -->
+
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand-name">Juice Junkies</div>
+      <div class="footer-tagline">Pure. Fresh. Addictive.</div>
+      <div class="footer-social">
+        <a class="footer-social-icon" href="https://instagram.com/juicejunkies__" target="_blank"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+        <a class="footer-social-icon" href="mailto:hello@juicejunkies.com"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Menu</h4>
+      <ul>
+        <li><a href="#" onclick="showPage('home')">Home</a></li>
+        <li><a href="#" onclick="showPage('shop')">Shop</a></li>
+        <li><a href="#" onclick="showPage('about')">About</a></li>
+        <li><a href="#" onclick="showPage('about')">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Our Juices</h4>
+      <ul>
+        <li><a href="#" onclick="showPage('shop')">Green Detox</a></li>
+        <li><a href="#" onclick="showPage('shop')">Citrus Glow</a></li>
+        <li><a href="#" onclick="showPage('shop')">Beet Boost</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Juice Junkies. All rights reserved.</span>
+    <span>Small batch. Big flavor. Real fuel.</span>
+  </div>
+</footer>
+
+
+<script>
+// ---- PAGE ROUTING ----
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById(page + '-page').classList.add('active');
+  document.getElementById('nav-' + page).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ---- CART STATE ----
+let cart = {};
+let selectedPayment = 'venmo';
+
+function changeQty(id, delta) {
+  const el = document.getElementById('qty-' + id);
+  let val = parseInt(el.textContent) + delta;
+  if (val < 1) val = 1;
+  if (val > 20) val = 20;
+  el.textContent = val;
+}
+
+function addToCart(id, name, price) {
+  const qty = parseInt(document.getElementById('qty-' + id).textContent);
+  if (cart[id]) {
+    cart[id].qty += qty;
+  } else {
+    cart[id] = { name, price, qty };
+  }
+  renderCart();
+  // flash feedback
+  openCart();
+}
+
+function renderCart() {
+  const container = document.getElementById('cart-items');
+  const badge = document.getElementById('cart-float-badge') || document.getElementById('cart-badge');
+  let totalQty = 0, totalPrice = 0;
+
+  const keys = Object.keys(cart);
+  if (keys.length === 0) {
+    container.innerHTML = '<div class="cart-empty"><div class="cart-empty-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8C8 10 5.9 16.17 3.82 19.5c-.05.08-.1.15-.14.22"/><path d="M3.82 19.5C3.82 19.5 5 14 12 12"/><path d="M3 21c.5-1.5 1.5-3 3-4.5"/></svg></div><p>Your cart is empty.<br>Add some juice!</p></div>';
+    document.getElementById('cart-badge').style.display = 'none';
+    document.getElementById('cart-total-price').textContent = '$0';
+    return;
+  }
+
+  let html = '';
+  keys.forEach(id => {
+    const item = cart[id];
+    totalQty += item.qty;
+    totalPrice += item.qty * item.price;
+    html += `<div class="cart-item">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-sub">16 oz · $${item.price} each</div>
+        <div class="cart-item-qty">
+          <button class="qty-btn" style="width:26px;height:26px;border:1px solid rgba(255,255,255,0.1);" onclick="updateCartQty('${id}', -1)">−</button>
+          <span>${item.qty}</span>
+          <button class="qty-btn" style="width:26px;height:26px;border:1px solid rgba(255,255,255,0.1);" onclick="updateCartQty('${id}', 1)">+</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;">
+        <div class="cart-item-price">$${item.qty * item.price}</div>
+        <button class="cart-item-remove" onclick="removeFromCart('${id}')">✕</button>
+      </div>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+  document.getElementById('cart-total-price').textContent = '$' + totalPrice;
+
+  const badgeEl = document.getElementById('cart-badge');
+  badgeEl.textContent = totalQty;
+  badgeEl.style.display = 'flex';
+}
+
+function updateCartQty(id, delta) {
+  if (!cart[id]) return;
+  cart[id].qty += delta;
+  if (cart[id].qty <= 0) delete cart[id];
+  renderCart();
+}
+
+function removeFromCart(id) {
+  delete cart[id];
+  renderCart();
+}
+
+function openCart() {
+  document.getElementById('cart-panel').classList.add('open');
+  document.getElementById('cart-overlay').classList.add('open');
+}
+
+function toggleCart() {
+  document.getElementById('cart-panel').classList.toggle('open');
+  document.getElementById('cart-overlay').classList.toggle('open');
+}
+
+// ---- CHECKOUT ----
+function openCheckout() {
+  if (Object.keys(cart).length === 0) return;
+  buildOrderSummary();
+  document.getElementById('order-form-content').style.display = 'block';
+  document.getElementById('order-success').classList.remove('show');
+  document.getElementById('order-modal').classList.add('open');
+  document.getElementById('cart-panel').classList.remove('open');
+  document.getElementById('cart-overlay').classList.remove('open');
+}
+
+function buildOrderSummary() {
+  let html = '<h4>Order Summary</h4>';
+  let total = 0;
+  Object.values(cart).forEach(item => {
+    total += item.qty * item.price;
+    html += `<div class="modal-order-item"><span>${item.name} × ${item.qty}</span><span>$${item.qty * item.price}</span></div>`;
+  });
+  html += `<div class="modal-order-total"><span>Total</span><span>$${total}</span></div>`;
+  document.getElementById('modal-order-summary').innerHTML = html;
+}
+
+function closeModal() {
+  document.getElementById('order-modal').classList.remove('open');
+}
+
+function selectPayment(method, el) {
+  selectedPayment = method;
+  document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+document.getElementById('order-delivery').addEventListener('change', function() {
+  document.getElementById('delivery-address-group').style.display = this.value === 'delivery' ? 'block' : 'none';
+});
+
+function submitOrder() {
+  const name = document.getElementById('order-name').value.trim();
+  const phone = document.getElementById('order-phone').value.trim();
+  const email = document.getElementById('order-email').value.trim();
+
+  if (!name || !phone || !email) {
+    alert('Please fill in your name, phone, and email.');
+    return;
+  }
+
+  // Build mailto link for the owner
+  const delivery = document.getElementById('order-delivery').value;
+  const address = document.getElementById('order-address').value;
+  const notes = document.getElementById('order-notes').value;
+  let orderLines = Object.values(cart).map(i => `${i.name} x${i.qty} = $${i.qty * i.price}`).join('%0A');
+  let total = Object.values(cart).reduce((s, i) => s + i.qty * i.price, 0);
+
+  const subject = encodeURIComponent(`New Juice Junkies Order from ${name}`);
+  const body = encodeURIComponent(
+    `NEW ORDER\n\nCustomer: ${name}\nPhone: ${phone}\nEmail: ${email}\nPayment: ${selectedPayment}\n\n` +
+    `ITEMS:\n${Object.values(cart).map(i => `${i.name} x${i.qty} = $${i.qty * i.price}`).join('\n')}\n\n` +
+    `TOTAL: $${total}\n\n` +
+    `Fulfillment: ${delivery}${delivery === 'delivery' ? ` - ${address}` : ''}\n\n` +
+    `Notes: ${notes || 'None'}`
+  );
+
+  // Open mailto for owner (update email address here)
+  window.location.href = `mailto:hello@juicejunkies.com?subject=${subject}&body=${body}`;
+
+  // Show success
+  document.getElementById('order-form-content').style.display = 'none';
+  document.getElementById('order-success').classList.add('show');
+  cart = {};
+  renderCart();
+}
+
+function submitContact() {
+  const name = document.getElementById('contact-name').value.trim();
+  const email = document.getElementById('contact-email').value.trim();
+  const msg = document.getElementById('contact-message').value.trim();
+
+  if (!name || !email || !msg) {
+    alert('Please fill in all fields.');
+    return;
+  }
+
+  const subject = encodeURIComponent(`Message from ${name} via Juice Junkies site`);
+  const body = encodeURIComponent(`From: ${name}\nEmail: ${email}\n\nMessage:\n${msg}`);
+  window.location.href = `mailto:hello@juicejunkies.com?subject=${subject}&body=${body}`;
+
+  document.getElementById('contact-confirm').style.display = 'block';
+  document.getElementById('contact-name').value = '';
+  document.getElementById('contact-email').value = '';
+  document.getElementById('contact-message').value = '';
+}
+
+// close modal on backdrop click
+document.getElementById('order-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
